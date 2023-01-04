@@ -11,6 +11,8 @@ import { Base64 } from "./libraries/Base64.sol";
 
 contract MyEpicNFT is ERC721URIStorage {
 
+    uint256 public constant maxSupply = 50;
+
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     string baseSvg = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>";
@@ -20,6 +22,9 @@ contract MyEpicNFT is ERC721URIStorage {
     string[] secondWords = ["Cupcake", "Pizza", "Milkshake", "Curry", "Chicken", "Sandwich", "Salad", "Oil", "Soy", "Galic", "Ori", "Orange", "Radish", "Pancake", "Coffee"];
     string[] thirdWords = ["Naruto", "Sasuke", "Sakura", "Goku", "Garra", "Minato", "Santoshi", "Kakashi", "Itachi", "Madara", "Mina", "Kulama", "Zilaya", "Muya", "Lisa"];
 
+    // event
+    event NewEpicNFTMinted(address sender, uint256 tokenId);
+
     // NFT name & symbol
     constructor() ERC721 ("SquareNFT", "SQUARE") {
         console.log("This is my NFT contract!");
@@ -27,6 +32,7 @@ contract MyEpicNFT is ERC721URIStorage {
 
     function makeAnEpicNFT() public {
         uint256 newItemId = _tokenIds.current();
+        require(newItemId < maxSupply, "Max supply reached!");
 
         string memory first = pickRandomWord(0, newItemId);
         string memory second = pickRandomWord(1, newItemId);
@@ -75,6 +81,8 @@ contract MyEpicNFT is ERC721URIStorage {
 
         _tokenIds.increment();
         console.log("An NFT w/ ID %s has been minted by %s", newItemId, msg.sender);
+
+        emit NewEpicNFTMinted(msg.sender, newItemId);
     }
 
     // function tokenURI(uint256 _tokenId) public view override returns (string memory) {
@@ -89,6 +97,10 @@ contract MyEpicNFT is ERC721URIStorage {
     // }
 
     // Tools
+    function getCurrentSupply() public view returns (uint256) {
+        return _tokenIds.current();
+    }
+
     function pickRandomWord(uint256 count, uint256 tokenId) public view returns (string memory) {
         string[] memory words;
         uint result = count % 3;
