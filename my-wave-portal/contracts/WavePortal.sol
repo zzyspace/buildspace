@@ -7,13 +7,30 @@ import "hardhat/console.sol";
 contract WavePortal {
     uint256 totalWaves; // 状态变量
 
-    constructor() {
-        console.log("New Contract");
+    event NewWave(address indexed from, uint256 timestamp, string message);
+
+    struct Wave {
+        address waver;
+        uint256 timestamp;
+        string message;
     }
 
-    function wave() public {
+    Wave[] waves;
+
+    constructor() {
+        console.log("New Contract!");
+    }
+
+    function wave(string memory _message) public {
         totalWaves++;
-        console.log("%s is waved!", msg.sender);
+        console.log("%s waved w/ message %s!", msg.sender, _message);
+        
+        waves.push(Wave(msg.sender, block.timestamp, _message));
+        emit NewWave(msg.sender, block.timestamp, _message);
+    }
+
+    function getAllWaves () public view returns (Wave[] memory) {
+        return waves;
     }
 
     function getTotalWaves () public view returns (uint256) {
