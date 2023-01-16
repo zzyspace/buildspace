@@ -34,8 +34,11 @@ const main = async () => {
     console.log("Contract Balance:", hre.ethers.utils.formatEther(balance));
 
     // send wave
-    const txn = await contract.wave("A message!");
-    await txn.wait();
+    const wave1txn = await contract.wave("A message!");
+    await wave1txn.wait();
+
+    const wave2txn = await contract.connect(randomPerson).wave("Another message!");
+    await wave2txn.wait();
 
     // check balance
     balance = await hre.ethers.provider.getBalance(contract.address);

@@ -12,7 +12,7 @@ const main = async () => {
     
     // 部署合约
     const contract = await contractFactory.deploy({
-        value: hre.ethers.utils.parseEther("0.001")
+        value: hre.ethers.utils.parseEther("0.01")
     });
 
     // 等到该合约部署完成
